@@ -1,17 +1,19 @@
 const User = require('../model/Users.js');
 const bcrypt = require('bcrypt');
-const router = require('express').Router(); 
+const router = require('express').Router();
 
 router.post("/", async (req, res) => {
     const { email, password } = req.body;
-    try{
-        const eUser = await User.findOne({email});
-        if(!eUser) {
-            res.send({ message: "The user doesn't exist, Please signup", alert: false });
+
+    try {
+        const eUser = await User.findOne({ email: email });
+
+        if (!eUser) {
+            return res.status(404).json({ message: "The user doesn't exist. Please sign up", alert: false });
         }
 
-        if(!(bcrypt.compareSync(password, eUser.password))){
-            return res.status(403).json({message: 'Invalid password or email...'})
+        if (!(await bcrypt.compare(password, eUser.password))) {
+            return res.status(403).json({ message: 'Incorrect password. Try another...' });
         }
 
         const dataSend = {
@@ -22,13 +24,15 @@ router.post("/", async (req, res) => {
             image: eUser.image
         };
 
-        return res.status(201).json({
-            data: dataSend
-        })
-       
-}catch(e) {
-    return res.status(500).json({message: 'Internal server error...'})
-}
+        res.status(200).json({
+            message: `User with email ${email} logged in successfully`,
+            data: dataSend,
+            alert: true
+        });
+    } catch (err) {
+        console.error("Error during login:", err);
+        res.status(500).json({ message: 'Internal server error...', alert: false });
+    }
 });
 
 module.exports = router;

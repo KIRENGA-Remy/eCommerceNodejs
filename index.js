@@ -5,7 +5,7 @@ const cors = require("cors");
 const signupRoute = require("./Routes/signupRoute.js");
 const loginRoute = require("./Routes/loginRoute.js");
 const productsRoute = require("./Routes/productsRoute.js");
-const getProducts = require("./Routes/getProducts.js");
+const getProduct = require("./Routes/getProducts.js");
 
 dotenv.config();
 
@@ -14,18 +14,6 @@ const app = express();
 app.use(express.json({ limit: "10mb" }));
 app.use(cors());
 mongoose.set("strictQuery", false);
-
-// const connect = async () => {
-//     try {
-//         await mongoose.connect(process.env.MONGODB_URL, {
-//             useNewUrlParser: true,
-//             useUnifiedTopology: true,
-//         });
-//         console.log('Successfully connected to the database');
-//     } catch (error) {
-//         console.error('Failed to connect to the database:', error);
-//     }
-// };
 
 mongoose
   .connect(process.env.MONGODB_URL, {
@@ -39,13 +27,13 @@ mongoose
 // connect();
 
 app.get("/", (req, res) => {
-  res.send("This server is connected");
+  res.send("Api are working properly");
 });
 
 app.use("/signup", signupRoute);
 app.use("/login", loginRoute);
-app.use("/products", productsRoute);
-app.use("/product", getProducts);
+app.use("/uploadproducts", productsRoute);
+app.use("/product", getProduct);
 
 const PORT = process.env.PORT || 8080;
 
