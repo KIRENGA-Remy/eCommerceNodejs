@@ -1,8 +1,8 @@
-const productModel = require('../model/products.js');
+const Products = require('../model/products.js');
 const router = require('express').Router();
 router.post("/", async (req,res) => {
     try {
-        const newProduct = new productModel({
+        const newProduct = new Products({
             name: req.body.name,
             category: req.body.category,
             image: req.body.image,
