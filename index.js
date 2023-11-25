@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const { NextApiRequest, NextApiResponse } = require('next');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const signupRoute = require("./Routes/signupRoute.js");
 const loginRoute = require("./Routes/loginRoute.js");
@@ -40,7 +39,7 @@ app.use("/product", getProduct);
 
 /*****payment getWay */
 app.post("/checkout-payment", async (req, res) => {
-  try {
+
     const params = {
       submit_type: "pay",
       mode: "payment",
@@ -70,12 +69,10 @@ app.post("/checkout-payment", async (req, res) => {
     };
 
     // Use stripe.checkout.sessions.create instead of stripe.sessions.create
-    const session = await stripe.checkout.sessions.create(params);
-    console.log(session.id);
-    res.status(200).json(session.id);
-  } catch (err) {
-    res.status(err.statusCode || 500).json(err.message);
-  }
+    const session = await stripe.checkout.sessions.create(params)
+    .then(session => console.log(session.id))
+    .catch(error => console.error(error));
+
 });
 
 const PORT = process.env.PORT || 8080;
