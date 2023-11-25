@@ -10,7 +10,6 @@ router.post("/", async (req,res) => {
             description: req.body.description
         })
         const savedProducts = await newProduct.save();
-        console.log(savedProducts);
         res.status(201).json({ message: "Product successfully created",alert: true , data: savedProducts})
     } catch (err) {
         res.status(500).json({message: "Failed to create any product", alert: false})
