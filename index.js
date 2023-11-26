@@ -63,7 +63,7 @@ app.post("/checkout-payment", async (req, res) => {
             enabled: true,
             minimum: 1,
           },
-          quantity: item.qty,
+          quantity: item.quantity,
         };
       }),
       success_url: `${process.env.FRONTEND_URL}/success`,
