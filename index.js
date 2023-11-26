@@ -40,6 +40,8 @@ app.use("/product", getProduct);
 /*****payment getWay */
 app.post("/checkout-payment", async (req, res) => {
 
+  const { items } = req.body;
+
     const params = {
       submit_type: "pay",
       mode: "payment",
@@ -47,7 +49,7 @@ app.post("/checkout-payment", async (req, res) => {
       billing_address_collection: "auto",
       shipping_options: [{ shipping_rate: "shr_1OFwfcFYmq3sL3vkZUua9eWg" }],
 
-      line_items: req.body.map((item) => {
+      line_items: items.map((item) => {
         return {
           price_data: {
             currency: "rwf",
