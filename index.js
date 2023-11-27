@@ -1,15 +1,17 @@
+
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv").config()
 const cors = require("cors");
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const Stripe = require('stripe')
 const signupRoute = require("./Routes/signupRoute.js");
 const loginRoute = require("./Routes/loginRoute.js");
 const productsRoute = require("./Routes/productsRoute.js");
 const getProduct = require("./Routes/getProducts.js");
 
-
-dotenv.config();
+const stripePromise=new Stripe(process.env.STRIPE_SECRET_KEY,{
+  apiVersion:"2023-08-16"
+});
 
 const app = express();
 
@@ -39,8 +41,9 @@ app.use("/product", getProduct);
 
 /*****payment getWay */
 app.post("/checkout-payment", async (req, res) => {
-
+  console.log("checkout endpoint was hit")
   const { items } = req.body;
+  console.log("items",items)
 
     const params = {
       submit_type: "pay",
@@ -71,9 +74,15 @@ app.post("/checkout-payment", async (req, res) => {
     };
 
     // Use stripe.checkout.sessions.create instead of stripe.sessions.create
-    const session = await stripe.checkout.sessions.create(params)
-    .then(session => console.log(session.id))
-    .catch(error => console.error(error));
+    const session = await stripePromise.checkout.sessions.create(params)
+    .then(session => res.status(200).json({
+      sessionId:session.id
+    }))
+    .catch(error =>{ console.error(error)
+      res.status(500).send("something went wrong!")
+    });
+
+
 
 });
 
