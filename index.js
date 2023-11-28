@@ -41,9 +41,7 @@ app.use("/product", getProduct);
 
 /*****payment getWay */
 app.post("/checkout-payment", async (req, res) => {
-  console.log("checkout endpoint was hit")
   const { items } = req.body;
-  console.log("items",items)
 
     const params = {
       submit_type: "pay",
